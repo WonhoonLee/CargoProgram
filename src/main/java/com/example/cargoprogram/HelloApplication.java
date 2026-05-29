@@ -11,7 +11,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -40,13 +43,8 @@ public class HelloApplication extends Application {
 
         Pane gamePane = new Pane();
 
-        Image mapImage = new Image(
-                getClass().getResource("/images/map.png").toExternalForm()
-        );
-
-        Image podMapImage = new Image(
-                getClass().getResource("/images/pod_map.png").toExternalForm()
-        );
+        Image mapImage = new Image(getClass().getResource("/images/map.png").toExternalForm());
+        Image podMapImage = new Image(getClass().getResource("/images/pod_map.png").toExternalForm());
 
         ImageView mapView = new ImageView(mapImage);
         mapView.setFitWidth(GAME_WIDTH);
@@ -54,32 +52,60 @@ public class HelloApplication extends Application {
         mapView.setPreserveRatio(false);
         gamePane.getChildren().add(mapView);
 
-        Image emptyShipImage = new Image(
-                getClass().getResource("/images/ship.png").toExternalForm()
-        );
+        Image emptyShipImage = new Image(getClass().getResource("/images/ship.png").toExternalForm());
+        Image emptyShipReverseImage = new Image(getClass().getResource("/images/ship_reverse.png").toExternalForm());
+        Image loadedShipImage = new Image(getClass().getResource("/images/load_ship.png").toExternalForm());
+        Image loadedShipFrontImage = new Image(getClass().getResource("/images/load_ship_front.png").toExternalForm());
+        Image loadedShipReverseImage = new Image(getClass().getResource("/images/load_ship_reverse.png").toExternalForm());
+        Image loadedShipSideImage = new Image(getClass().getResource("/images/load_ship_side.png").toExternalForm());
 
-        Image emptyShipReverseImage = new Image(
-                getClass().getResource("/images/ship_reverse.png").toExternalForm()
-        );
+        Image containerStackImage = new Image(getClass().getResource("/images/container.png").toExternalForm());
 
-        Image loadedShipImage = new Image(
-                getClass().getResource("/images/load_ship.png").toExternalForm()
-        );
+        Image craneBodyImage = new Image(getClass().getResource("/images/crane_body.png").toExternalForm());
+        Image craneBeamImage = new Image(getClass().getResource("/images/crane_system_beam.png").toExternalForm());
+        Image craneTrolleyImage = new Image(getClass().getResource("/images/crane_trolley.png").toExternalForm());
+        Image craneSpreaderImage = new Image(getClass().getResource("/images/crane_spreade.png").toExternalForm());
 
-        Image loadedShipFrontImage = new Image(
-                getClass().getResource("/images/load_ship_front.png").toExternalForm()
-        );
+        ImageView craneBody = new ImageView(craneBodyImage);
+        craneBody.setFitWidth(230);
+        craneBody.setPreserveRatio(true);
+        craneBody.setLayoutX(225);
+        craneBody.setLayoutY(260);
 
-        Image loadedShipReverseImage = new Image(
-                getClass().getResource("/images/load_ship_reverse.png").toExternalForm()
-        );
+        ImageView craneBeam = new ImageView(craneBeamImage);
+        craneBeam.setFitWidth(250);
+        craneBeam.setPreserveRatio(true);
+        craneBeam.setLayoutX(210);
+        craneBeam.setLayoutY(195);
 
-        Image loadedShipSideImage = new Image(
-                getClass().getResource("/images/load_ship_side.png").toExternalForm()
-        );
+        ImageView craneTrolley = new ImageView(craneTrolleyImage);
+        craneTrolley.setFitWidth(45);
+        craneTrolley.setPreserveRatio(true);
+        craneTrolley.setLayoutX(270);
+        craneTrolley.setLayoutY(300);
 
-        Image containerStackImage = new Image(
-                getClass().getResource("/images/container.png").toExternalForm()
+        ImageView craneSpreader = new ImageView(craneSpreaderImage);
+        craneSpreader.setFitWidth(65);
+        craneSpreader.setPreserveRatio(true);
+        craneSpreader.setLayoutX(260);
+        craneSpreader.setLayoutY(325);
+
+        Line craneWire = new Line();
+        craneWire.setStroke(Color.DARKGRAY);
+        craneWire.setStrokeWidth(3);
+        craneWire.setStrokeLineCap(StrokeLineCap.ROUND);
+
+        craneWire.startXProperty().bind(craneTrolley.layoutXProperty().add(22));
+        craneWire.startYProperty().bind(craneTrolley.layoutYProperty().add(38));
+        craneWire.endXProperty().bind(craneSpreader.layoutXProperty().add(32));
+        craneWire.endYProperty().bind(craneSpreader.layoutYProperty().add(8));
+
+        gamePane.getChildren().addAll(
+                craneBody,
+                craneTrolley,
+                craneBeam,
+                craneWire,
+                craneSpreader
         );
 
         Image[] singleContainers = {
@@ -113,16 +139,12 @@ public class HelloApplication extends Application {
             for (int i = 0; i < 4; i++) {
                 int index = i;
 
-                PauseTransition delay =
-                        new PauseTransition(Duration.seconds(index * 0.25));
+                PauseTransition delay = new PauseTransition(Duration.seconds(index * 0.25));
 
                 delay.setOnFinished(event -> {
-                    Image randomContainer =
-                            singleContainers[random.nextInt(singleContainers.length)];
+                    Image randomContainer = singleContainers[random.nextInt(singleContainers.length)];
 
-                    ImageView movingContainer =
-                            new ImageView(randomContainer);
-
+                    ImageView movingContainer = new ImageView(randomContainer);
                     movingContainer.setFitWidth(SINGLE_CONTAINER_WIDTH);
                     movingContainer.setPreserveRatio(true);
                     movingContainer.setLayoutX(1030);
@@ -135,9 +157,7 @@ public class HelloApplication extends Application {
                     double targetX = 185 + (index % 2) * 55;
                     double targetY = 335 + (index / 2) * 35;
 
-                    TranslateTransition move =
-                            new TranslateTransition(Duration.seconds(1.0), movingContainer);
-
+                    TranslateTransition move = new TranslateTransition(Duration.seconds(1.0), movingContainer);
                     move.setToX(targetX - movingContainer.getLayoutX());
                     move.setToY(targetY - movingContainer.getLayoutY());
 
@@ -165,37 +185,22 @@ public class HelloApplication extends Application {
 
             shipSailed = true;
 
-            PauseTransition turnFront =
-                    new PauseTransition(Duration.seconds(0.3));
+            PauseTransition turnFront = new PauseTransition(Duration.seconds(0.3));
+            turnFront.setOnFinished(event -> ship.setImage(loadedShipFrontImage));
 
-            turnFront.setOnFinished(event -> {
-                ship.setImage(loadedShipFrontImage);
-            });
+            PauseTransition turnReverse = new PauseTransition(Duration.seconds(0.8));
+            turnReverse.setOnFinished(event -> ship.setImage(loadedShipReverseImage));
 
-            PauseTransition turnReverse =
-                    new PauseTransition(Duration.seconds(0.8));
+            PauseTransition turnSide = new PauseTransition(Duration.seconds(1.3));
+            turnSide.setOnFinished(event -> ship.setImage(loadedShipSideImage));
 
-            turnReverse.setOnFinished(event -> {
-                ship.setImage(loadedShipReverseImage);
-            });
-
-            PauseTransition turnSide =
-                    new PauseTransition(Duration.seconds(1.3));
-
-            turnSide.setOnFinished(event -> {
-                ship.setImage(loadedShipSideImage);
-            });
-
-            TranslateTransition sailMove =
-                    new TranslateTransition(Duration.seconds(2.5), ship);
-
+            TranslateTransition sailMove = new TranslateTransition(Duration.seconds(2.5), ship);
             sailMove.setByX(-300);
             sailMove.setByY(0);
 
             sailMove.setOnFinished(event -> {
 
                 mapView.setImage(podMapImage);
-
                 containerStack.setVisible(false);
 
                 ImageView podContainerStack = new ImageView(containerStackImage);
@@ -214,9 +219,7 @@ public class HelloApplication extends Application {
                 ship.setTranslateY(0);
                 ship.toFront();
 
-                TranslateTransition enterPod =
-                        new TranslateTransition(Duration.seconds(2.5), ship);
-
+                TranslateTransition enterPod = new TranslateTransition(Duration.seconds(2.5), ship);
                 enterPod.setByX(-260);
                 enterPod.setByY(0);
 
@@ -248,12 +251,9 @@ public class HelloApplication extends Application {
                                 Image randomContainer =
                                         singleContainers[random.nextInt(singleContainers.length)];
 
-                                ImageView unloadingContainer =
-                                        new ImageView(randomContainer);
-
+                                ImageView unloadingContainer = new ImageView(randomContainer);
                                 unloadingContainer.setFitWidth(SINGLE_CONTAINER_WIDTH);
                                 unloadingContainer.setPreserveRatio(true);
-
                                 unloadingContainer.setLayoutX(870);
                                 unloadingContainer.setLayoutY(450);
                                 unloadingContainer.setRotate(-1);
@@ -276,14 +276,11 @@ public class HelloApplication extends Application {
 
                                     if (index == 3) {
                                         ship.setImage(emptyShipReverseImage);
-
                                         ship.setLayoutX(850);
                                         ship.setLayoutY(430);
                                         ship.setRotate(0);
-
                                         ship.setTranslateX(0);
                                         ship.setTranslateY(0);
-
                                         ship.toFront();
                                     }
                                 });
