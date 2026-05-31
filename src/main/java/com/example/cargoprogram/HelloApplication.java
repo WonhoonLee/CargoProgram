@@ -19,6 +19,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.animation.SequentialTransition;
 
 import java.util.Random;
 
@@ -76,7 +77,7 @@ public class HelloApplication extends Application {
         Image truckRedDiagonalImage = new Image(getClass().getResource("/images/truck_load_red.png").toExternalForm());
         Image truckRedVerticalImage = new Image(getClass().getResource("/images/truck_load_red_vertical.png").toExternalForm());
         Image truckRedReverseImage = new Image(getClass().getResource("/images/truck_load_red_reverse.png").toExternalForm());
-
+        Image truckLoadRedVerticalReverseImage = new Image(getClass().getResource("/images/truck_load_red_vertical_reverse.png").toExternalForm());
         Image truckBlueHorizontalImage = new Image(getClass().getResource("/images/truck_load_blue_hr.png").toExternalForm());
         Image truckBlueDiagonalImage = new Image(getClass().getResource("/images/truck_load_blue.png").toExternalForm());
         Image truckBlueVerticalImage = new Image(getClass().getResource("/images/truck_load_blue_vertical.png").toExternalForm());
@@ -407,6 +408,8 @@ public class HelloApplication extends Application {
                                 singleContainers[0],
                                 podTruck,
                                 truckLoadRightUpperRedImage,
+                                truckLoadRedVerticalReverseImage,
+                                truckRedImage,
                                 craneBody,
                                 craneBeam,
                                 craneTrolley,
@@ -731,6 +734,8 @@ public class HelloApplication extends Application {
             Image containerImage,
             ImageView podTruck,
             Image truckLoadRightUpperRedImage,
+            Image truckLoadRedVerticalReverseImage,
+            Image truckLoadLeftUpperRedImage,
             ImageView craneBody,
             ImageView craneBeam,
             ImageView craneTrolley,
@@ -841,6 +846,47 @@ public class HelloApplication extends Application {
                             unloadingContainer.setVisible(false);
                             podTruck.setImage(truckLoadRightUpperRedImage);
                             podTruck.toFront();
+
+                            TranslateTransition podTruckMove1 =
+                                    new TranslateTransition(Duration.seconds(1.5), podTruck);
+
+                            // 1단계: ↗ 이동
+                            podTruckMove1.setToX(840 - podTruck.getLayoutX());
+                            podTruckMove1.setToY(330 - podTruck.getLayoutY());
+
+                            podTruckMove1.setOnFinished(move1Finish -> {
+
+                                // 2단계: ↑ 방향전환만
+                                podTruck.setImage(truckLoadRedVerticalReverseImage);
+                                podTruck.setFitWidth(90);
+                                podTruck.setPreserveRatio(true);
+
+                                PauseTransition turnPause =
+                                        new PauseTransition(Duration.seconds(0.25));
+
+                                turnPause.setOnFinished(turnFinish -> {
+
+                                    // 3단계: ↖ 방향전환 + 이동
+                                    podTruck.setImage(truckLoadLeftUpperRedImage);
+                                    podTruck.setFitWidth(135);
+                                    podTruck.setPreserveRatio(true);
+
+                                    TranslateTransition podTruckMove2 =
+                                            new TranslateTransition(Duration.seconds(2.0), podTruck);
+
+                                    podTruckMove2.setToX(480 - podTruck.getLayoutX());
+                                    podTruckMove2.setToY(120 - podTruck.getLayoutY());
+
+                                    podTruckMove2.play();
+                                });
+
+                                turnPause.play();
+                            });
+
+                            podTruckMove1.play();
+
+
+
                             ship.setImage(emptyShipReverseImage);
                             podUnloaded = true;
 
