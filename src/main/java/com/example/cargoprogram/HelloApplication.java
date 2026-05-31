@@ -96,8 +96,11 @@ public class HelloApplication extends Application {
         Image craneBeamImage = new Image(getClass().getResource("/images/crane_system_beam.png").toExternalForm());
         Image craneTrolleyImage = new Image(getClass().getResource("/images/crane_trolley.png").toExternalForm());
         Image craneSpreaderImage = new Image(getClass().getResource("/images/crane_spreade.png").toExternalForm());
-
+        Image craneBeamReverseImage = new Image(getClass().getResource("/images/crane_system_beam_reverse.png").toExternalForm());
+        Image craneSpreaderReverseImage = new Image(getClass().getResource("/images/crane_spreade_reverse.png").toExternalForm());
+        Image craneTrolleyReverseImage = new Image(getClass().getResource("/images/crane_trolley.png").toExternalForm());
         ImageView craneBody = new ImageView(craneBodyImage);
+
         craneBody.setFitWidth(230);
         craneBody.setPreserveRatio(true);
         craneBody.setLayoutX(225);
@@ -315,7 +318,36 @@ public class HelloApplication extends Application {
 
                 mapView.setImage(podMapImage);
 
+                craneBeam.setImage(craneBeamReverseImage);
+                craneTrolley.setImage(craneTrolleyReverseImage);
+                craneSpreader.setImage(craneSpreaderReverseImage);
+
                 containerStack.setVisible(false);
+                craneBody.setLayoutX(850);
+                craneBody.setLayoutY(330);
+                craneBody.setTranslateX(0);
+                craneBody.setTranslateY(0);
+
+                craneBeam.setLayoutX(850);
+                craneBeam.setLayoutY(270);
+                craneBeam.setTranslateX(0);
+                craneBeam.setTranslateY(0);
+
+                craneTrolley.setLayoutX(1000);
+                craneTrolley.setLayoutY(385);
+                craneTrolley.setTranslateX(0);
+                craneTrolley.setTranslateY(0);
+
+                craneSpreader.setLayoutX(990);
+                craneSpreader.setLayoutY(400);
+                craneSpreader.setTranslateX(0);
+                craneSpreader.setTranslateY(0);
+
+                craneBody.toFront();
+                craneBeam.toFront();
+                craneTrolley.toFront();
+                craneWire.toFront();
+                craneSpreader.toFront();
 
                 truck1.setVisible(false);
                 truck2.setVisible(false);
