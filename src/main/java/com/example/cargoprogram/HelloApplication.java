@@ -1,6 +1,8 @@
 package com.example.cargoprogram;
 
+import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
@@ -61,6 +63,35 @@ public class HelloApplication extends Application {
 
         Image containerStackImage = new Image(getClass().getResource("/images/container.png").toExternalForm());
 
+        Image truckImage = new Image(getClass().getResource("/images/truck_left_upper.png").toExternalForm());
+        Image truckHorizontalReverseImage = new Image(getClass().getResource("/images/truck_hr_reverse.png").toExternalForm());
+        Image truckRightUpperImage = new Image(getClass().getResource("/images/truck_right_upper.png").toExternalForm());
+        Image truckReverseImage = new Image(getClass().getResource("/images/truck_reverse.png").toExternalForm());
+        Image truckRedImage = new Image(getClass().getResource("/images/truck_load_left_upper_red.png").toExternalForm());
+        Image truckBlueImage = new Image(getClass().getResource("/images/truck_load_left_upper_blue.png").toExternalForm());
+        Image truckGreenImage = new Image(getClass().getResource("/images/truck_load_left_upper_green.png").toExternalForm());
+        Image truckOrangeImage = new Image(getClass().getResource("/images/truck_load_left_upper_orange.png").toExternalForm());
+
+        Image truckRedHorizontalImage = new Image(getClass().getResource("/images/truck_load_red_hr.png").toExternalForm());
+        Image truckRedDiagonalImage = new Image(getClass().getResource("/images/truck_load_red.png").toExternalForm());
+        Image truckRedVerticalImage = new Image(getClass().getResource("/images/truck_load_red_vertical.png").toExternalForm());
+        Image truckRedReverseImage = new Image(getClass().getResource("/images/truck_load_red_reverse.png").toExternalForm());
+
+        Image truckBlueHorizontalImage = new Image(getClass().getResource("/images/truck_load_blue_hr.png").toExternalForm());
+        Image truckBlueDiagonalImage = new Image(getClass().getResource("/images/truck_load_blue.png").toExternalForm());
+        Image truckBlueVerticalImage = new Image(getClass().getResource("/images/truck_load_blue_vertical.png").toExternalForm());
+        Image truckBlueReverseImage = new Image(getClass().getResource("/images/truck_load_blue_reverse.png").toExternalForm());
+
+        Image truckGreenHorizontalImage = new Image(getClass().getResource("/images/truck_load_green_hr.png").toExternalForm());
+        Image truckGreenDiagonalImage = new Image(getClass().getResource("/images/truck_load_green.png").toExternalForm());
+        Image truckGreenVerticalImage = new Image(getClass().getResource("/images/truck_load_green_vertical.png").toExternalForm());
+        Image truckGreenReverseImage = new Image(getClass().getResource("/images/truck_load_green_reverse.png").toExternalForm());
+
+        Image truckOrangeHorizontalImage = new Image(getClass().getResource("/images/truck_load_orange_hr.png").toExternalForm());
+        Image truckOrangeDiagonalImage = new Image(getClass().getResource("/images/truck_load_orange.png").toExternalForm());
+        Image truckOrangeVerticalImage = new Image(getClass().getResource("/images/truck_load_orange_vertical.png").toExternalForm());
+        Image truckOrangeReverseImage = new Image(getClass().getResource("/images/truck_load_orange_reverse.png").toExternalForm());
+
         Image craneBodyImage = new Image(getClass().getResource("/images/crane_body.png").toExternalForm());
         Image craneBeamImage = new Image(getClass().getResource("/images/crane_system_beam.png").toExternalForm());
         Image craneTrolleyImage = new Image(getClass().getResource("/images/crane_trolley.png").toExternalForm());
@@ -88,31 +119,32 @@ public class HelloApplication extends Application {
         craneSpreader.setFitWidth(65);
         craneSpreader.setPreserveRatio(true);
         craneSpreader.setLayoutX(260);
-        craneSpreader.setLayoutY(325);
+        craneSpreader.setLayoutY(315);
 
         Line craneWire = new Line();
         craneWire.setStroke(Color.DARKGRAY);
         craneWire.setStrokeWidth(3);
         craneWire.setStrokeLineCap(StrokeLineCap.ROUND);
 
-        craneWire.startXProperty().bind(craneTrolley.layoutXProperty().add(22));
-        craneWire.startYProperty().bind(craneTrolley.layoutYProperty().add(38));
-        craneWire.endXProperty().bind(craneSpreader.layoutXProperty().add(32));
-        craneWire.endYProperty().bind(craneSpreader.layoutYProperty().add(8));
+        craneWire.startXProperty().bind(craneTrolley.layoutXProperty().add(craneTrolley.translateXProperty()).add(22));
+        craneWire.startYProperty().bind(craneTrolley.layoutYProperty().add(craneTrolley.translateYProperty()).add(38));
+        craneWire.endXProperty().bind(craneSpreader.layoutXProperty().add(craneSpreader.translateXProperty()).add(32));
+        craneWire.endYProperty().bind(craneSpreader.layoutYProperty().add(craneSpreader.translateYProperty()).add(8));
 
-        gamePane.getChildren().addAll(
-                craneBody,
-                craneTrolley,
-                craneBeam,
-                craneWire,
-                craneSpreader
-        );
+        gamePane.getChildren().addAll(craneBody, craneTrolley, craneBeam, craneWire, craneSpreader);
 
         Image[] singleContainers = {
                 new Image(getClass().getResource("/images/red_container.png").toExternalForm()),
                 new Image(getClass().getResource("/images/orange_container.png").toExternalForm()),
                 new Image(getClass().getResource("/images/blue_container.png").toExternalForm()),
                 new Image(getClass().getResource("/images/green_container.png").toExternalForm())
+        };
+
+        Image[] loadedTruckImages = {
+                truckRedImage,
+                truckBlueImage,
+                truckGreenImage,
+                truckOrangeImage
         };
 
         ImageView ship = new ImageView(emptyShipImage);
@@ -132,6 +164,90 @@ public class HelloApplication extends Application {
         containerStack.setRotate(-1);
         containerStack.setCursor(Cursor.HAND);
         gamePane.getChildren().add(containerStack);
+
+        ImageView truck1 = createTruck(truckImage, 1050, 290);
+        ImageView truck2 = createTruck(truckImage, 1120, 329);
+        ImageView truck3 = createTruck(truckImage, 1190, 368);
+        ImageView truck4 = createTruck(truckImage, 1250, 400);
+
+        gamePane.getChildren().addAll(truck1, truck2, truck3, truck4);
+
+        ImageView[] trucks = {truck1, truck2, truck3, truck4};
+
+        final boolean[] truck1Arrived = {false};
+        final boolean[] craneUsed = {false};
+
+        truck1.setOnMouseClicked(e -> moveTruckToCrane(
+                truck1,
+                truckRedHorizontalImage,
+                truckRedDiagonalImage,
+                truckRedVerticalImage,
+                truckRedReverseImage,
+                craneBody, craneBeam, craneTrolley, craneWire, craneSpreader,
+                () -> truck1Arrived[0] = true
+        ));
+
+        truck2.setOnMouseClicked(e -> moveTruckToCrane(
+                truck2,
+                truckBlueHorizontalImage,
+                truckBlueDiagonalImage,
+                truckBlueVerticalImage,
+                truckBlueReverseImage,
+                craneBody, craneBeam, craneTrolley, craneWire, craneSpreader,
+                null
+        ));
+
+        truck3.setOnMouseClicked(e -> moveTruckToCrane(
+                truck3,
+                truckGreenHorizontalImage,
+                truckGreenDiagonalImage,
+                truckGreenVerticalImage,
+                truckGreenReverseImage,
+                craneBody, craneBeam, craneTrolley, craneWire, craneSpreader,
+                null
+        ));
+
+        truck4.setOnMouseClicked(e -> moveTruckToCrane(
+                truck4,
+                truckOrangeHorizontalImage,
+                truckOrangeDiagonalImage,
+                truckOrangeVerticalImage,
+                truckOrangeReverseImage,
+                craneBody, craneBeam, craneTrolley, craneWire, craneSpreader,
+                null
+        ));
+
+        Runnable craneClickEvent = () -> {
+            if (!truck1Arrived[0] || craneUsed[0]) return;
+
+            craneUsed[0] = true;
+
+            startCraneLoadTruck1ToShip(
+                    gamePane,
+                    truck1,
+                    truckReverseImage,
+                    truckHorizontalReverseImage,
+                    truckRightUpperImage,
+                    singleContainers[0],
+                    loadedShipImage,
+                    ship,
+                    craneBody,
+                    craneBeam,
+                    craneTrolley,
+                    craneWire,
+                    craneSpreader
+            );
+        };
+
+        craneBody.setCursor(Cursor.HAND);
+        craneBeam.setCursor(Cursor.HAND);
+        craneTrolley.setCursor(Cursor.HAND);
+        craneSpreader.setCursor(Cursor.HAND);
+
+        craneBody.setOnMouseClicked(e -> craneClickEvent.run());
+        craneBeam.setOnMouseClicked(e -> craneClickEvent.run());
+        craneTrolley.setOnMouseClicked(e -> craneClickEvent.run());
+        craneSpreader.setOnMouseClicked(e -> craneClickEvent.run());
 
         containerStack.setOnMouseClicked(e -> {
             containerStack.setDisable(true);
@@ -154,8 +270,8 @@ public class HelloApplication extends Application {
                     gamePane.getChildren().add(movingContainer);
                     movingContainer.toFront();
 
-                    double targetX = 185 + (index % 2) * 55;
-                    double targetY = 335 + (index / 2) * 35;
+                    double targetX = trucks[index].getLayoutX() + 35;
+                    double targetY = trucks[index].getLayoutY() + 35;
 
                     TranslateTransition move = new TranslateTransition(Duration.seconds(1.0), movingContainer);
                     move.setToX(targetX - movingContainer.getLayoutX());
@@ -163,11 +279,8 @@ public class HelloApplication extends Application {
 
                     move.setOnFinished(finish -> {
                         movingContainer.setVisible(false);
-
-                        if (index == 3) {
-                            ship.setImage(loadedShipImage);
-                            shipLoaded = true;
-                        }
+                        trucks[index].setImage(loadedTruckImages[index]);
+                        trucks[index].setDisable(false);
                     });
 
                     move.play();
@@ -195,13 +308,19 @@ public class HelloApplication extends Application {
             turnSide.setOnFinished(event -> ship.setImage(loadedShipSideImage));
 
             TranslateTransition sailMove = new TranslateTransition(Duration.seconds(2.5), ship);
-            sailMove.setByX(-300);
+            sailMove.setByX(-500);
             sailMove.setByY(0);
 
             sailMove.setOnFinished(event -> {
 
                 mapView.setImage(podMapImage);
+
                 containerStack.setVisible(false);
+
+                truck1.setVisible(false);
+                truck2.setVisible(false);
+                truck3.setVisible(false);
+                truck4.setVisible(false);
 
                 ImageView podContainerStack = new ImageView(containerStackImage);
                 podContainerStack.setFitWidth(CONTAINER_STACK_WIDTH);
@@ -231,66 +350,6 @@ public class HelloApplication extends Application {
                     ship.setTranslateX(0);
                     ship.setTranslateY(0);
                     ship.toFront();
-
-                    ship.setOnMouseClicked(unloadEvent -> {
-
-                        if (podUnloaded) {
-                            return;
-                        }
-
-                        podUnloaded = true;
-
-                        for (int i = 0; i < 4; i++) {
-                            int index = i;
-
-                            PauseTransition unloadDelay =
-                                    new PauseTransition(Duration.seconds(index * 0.25));
-
-                            unloadDelay.setOnFinished(delayEvent -> {
-
-                                Image randomContainer =
-                                        singleContainers[random.nextInt(singleContainers.length)];
-
-                                ImageView unloadingContainer = new ImageView(randomContainer);
-                                unloadingContainer.setFitWidth(SINGLE_CONTAINER_WIDTH);
-                                unloadingContainer.setPreserveRatio(true);
-                                unloadingContainer.setLayoutX(870);
-                                unloadingContainer.setLayoutY(450);
-                                unloadingContainer.setRotate(-1);
-
-                                gamePane.getChildren().add(unloadingContainer);
-                                unloadingContainer.toFront();
-
-                                double targetX = 260 + (index % 2) * 55;
-                                double targetY = 390 + (index / 2) * 35;
-
-                                TranslateTransition unloadMove =
-                                        new TranslateTransition(Duration.seconds(1.0), unloadingContainer);
-
-                                unloadMove.setToX(targetX - unloadingContainer.getLayoutX());
-                                unloadMove.setToY(targetY - unloadingContainer.getLayoutY());
-
-                                unloadMove.setOnFinished(unloadFinish -> {
-
-                                    unloadingContainer.setVisible(false);
-
-                                    if (index == 3) {
-                                        ship.setImage(emptyShipReverseImage);
-                                        ship.setLayoutX(850);
-                                        ship.setLayoutY(430);
-                                        ship.setRotate(0);
-                                        ship.setTranslateX(0);
-                                        ship.setTranslateY(0);
-                                        ship.toFront();
-                                    }
-                                });
-
-                                unloadMove.play();
-                            });
-
-                            unloadDelay.play();
-                        }
-                    });
                 });
 
                 enterPod.play();
@@ -303,7 +362,6 @@ public class HelloApplication extends Application {
         });
 
         Group gameGroup = new Group(gamePane);
-
         Pane root = new Pane(gameGroup);
         root.setStyle("-fx-background-color: #25bcea;");
 
@@ -332,6 +390,275 @@ public class HelloApplication extends Application {
         stage.setX(80);
         stage.setY(80);
         stage.show();
+    }
+
+    private ImageView createTruck(Image truckImage, double x, double y) {
+        ImageView truck = new ImageView(truckImage);
+        truck.setFitWidth(120);
+        truck.setPreserveRatio(true);
+        truck.setLayoutX(x);
+        truck.setLayoutY(y);
+        truck.setDisable(true);
+        truck.setCursor(Cursor.HAND);
+        return truck;
+    }
+
+    private void moveTruckToCrane(
+            ImageView truck,
+            Image horizontalImage,
+            Image diagonalImage,
+            Image verticalImage,
+            Image reverseImage,
+            ImageView craneBody,
+            ImageView craneBeam,
+            ImageView craneTrolley,
+            Line craneWire,
+            ImageView craneSpreader,
+            Runnable onArrived
+    ) {
+        truck.setDisable(true);
+
+        TranslateTransition move1 = new TranslateTransition(Duration.seconds(3), truck);
+        move1.setToX(580 - truck.getLayoutX());
+        move1.setToY(50 - truck.getLayoutY());
+
+        move1.setOnFinished(e -> {
+            truck.setImage(horizontalImage);
+            truck.setFitWidth(150);
+            truck.setPreserveRatio(true);
+
+            PauseTransition turnPause1 = new PauseTransition(Duration.seconds(0.25));
+
+            turnPause1.setOnFinished(p1 -> {
+                truck.setImage(diagonalImage);
+                truck.setFitWidth(140);
+                truck.setPreserveRatio(true);
+
+                TranslateTransition move2 = new TranslateTransition(Duration.seconds(2.0), truck);
+                move2.setToX(250 - truck.getLayoutX());
+                move2.setToY(230 - truck.getLayoutY());
+
+                move2.setOnFinished(e2 -> {
+                    truck.setImage(verticalImage);
+                    truck.setFitWidth(80);
+                    truck.setPreserveRatio(true);
+
+                    craneBody.toFront();
+                    craneBeam.toFront();
+                    craneTrolley.toFront();
+                    craneWire.toFront();
+                    craneSpreader.toFront();
+
+                    PauseTransition turnPause2 = new PauseTransition(Duration.seconds(0.25));
+
+                    turnPause2.setOnFinished(p2 -> {
+                        truck.setImage(reverseImage);
+                        truck.setFitWidth(135);
+                        truck.setPreserveRatio(true);
+
+                        TranslateTransition move3 = new TranslateTransition(Duration.seconds(1.3), truck);
+                        move3.setToX(330 - truck.getLayoutX());
+                        move3.setToY(300 - truck.getLayoutY());
+
+                        move3.setOnFinished(done -> {
+                            if (onArrived != null) onArrived.run();
+                        });
+
+                        move3.play();
+                    });
+
+                    turnPause2.play();
+                });
+
+                move2.play();
+            });
+
+            turnPause1.play();
+        });
+
+        move1.play();
+    }
+
+    private void startCraneLoadTruck1ToShip(
+            Pane gamePane,
+            ImageView truck,
+            Image emptyTruckReverseImage,
+            Image emptyTruckHorizontalImage,
+            Image emptyTruckRightUpperImage,
+            Image containerImage,
+            Image loadedShipImage,
+            ImageView ship,
+            ImageView craneBody,
+            ImageView craneBeam,
+            ImageView craneTrolley,
+            Line craneWire,
+            ImageView craneSpreader
+    ) {
+
+        craneBody.toFront();
+        craneBeam.toFront();
+        craneTrolley.toFront();
+        craneWire.toFront();
+        craneSpreader.toFront();
+
+        double trolleyTruckX = 380;
+        double spreaderTruckX = 370;
+
+        double spreaderHighY = 270;
+        double spreaderLowY = 315;
+
+        double containerTruckX = 380;
+        double containerTruckY = 330;
+
+        double trolleyShipX = 255;
+        double spreaderShipX = 255;
+
+        double shipHighY = 320;
+        double shipLowY = 370;
+
+        double containerShipX = 255;
+        double containerShipMoveY = 325;
+        double containerShipY = 380;
+
+        ImageView liftingContainer = new ImageView(containerImage);
+        liftingContainer.setFitWidth(SINGLE_CONTAINER_WIDTH);
+        liftingContainer.setPreserveRatio(true);
+        liftingContainer.setLayoutX(containerTruckX);
+        liftingContainer.setLayoutY(containerTruckY);
+        liftingContainer.setVisible(false);
+
+        gamePane.getChildren().add(liftingContainer);
+
+        TranslateTransition trolleyToTruck = new TranslateTransition(Duration.seconds(1.0), craneTrolley);
+        trolleyToTruck.setToX(trolleyTruckX - craneTrolley.getLayoutX());
+        trolleyToTruck.setToY(-50);
+
+        TranslateTransition spreaderXToTruck = new TranslateTransition(Duration.seconds(1.0), craneSpreader);
+        spreaderXToTruck.setToX(spreaderTruckX - craneSpreader.getLayoutX());
+        spreaderXToTruck.setToY(-50);
+
+        ParallelTransition moveXToTruck = new ParallelTransition(trolleyToTruck, spreaderXToTruck);
+
+        moveXToTruck.setOnFinished(e -> {
+            TranslateTransition spreaderDown = new TranslateTransition(Duration.seconds(0.8), craneSpreader);
+            spreaderDown.setToY(spreaderLowY - craneSpreader.getLayoutY());
+
+            spreaderDown.setOnFinished(downFinish -> {
+                liftingContainer.setVisible(true);
+                liftingContainer.toFront();
+                craneSpreader.toFront();
+
+                double containerOffsetX =
+                        liftingContainer.getLayoutX()
+                                - (craneSpreader.getLayoutX() + craneSpreader.getTranslateX());
+
+                double containerOffsetY =
+                        liftingContainer.getLayoutY()
+                                - (craneSpreader.getLayoutY() + craneSpreader.getTranslateY());
+
+                TranslateTransition spreaderUp = new TranslateTransition(Duration.seconds(0.8), craneSpreader);
+                spreaderUp.setToY(spreaderHighY - craneSpreader.getLayoutY());
+
+                TranslateTransition containerUp = new TranslateTransition(Duration.seconds(0.8), liftingContainer);
+                containerUp.setToX(
+                        craneSpreader.getLayoutX()
+                                + craneSpreader.getTranslateX()
+                                + containerOffsetX
+                                - liftingContainer.getLayoutX()
+                );
+                containerUp.setToY(spreaderHighY + containerOffsetY - liftingContainer.getLayoutY());
+
+                ParallelTransition liftUp = new ParallelTransition(spreaderUp, containerUp);
+
+                liftUp.setOnFinished(upFinish -> {
+
+                    // 1구간: 수평 빈 트럭 이미지로 변경 후 빠져나가기
+                    truck.setImage(emptyTruckReverseImage);
+                    truck.setFitWidth(135);
+                    truck.setPreserveRatio(true);
+
+                    TranslateTransition emptyMove1 = new TranslateTransition(Duration.seconds(1.2), truck);
+                    emptyMove1.setToX(470 - truck.getLayoutX());
+                    emptyMove1.setToY(350 - truck.getLayoutY());
+
+                    emptyMove1.setOnFinished(ev -> {
+
+                        // 방향전환용: 수평 이미지로 잠깐 변경
+                        truck.setImage(emptyTruckHorizontalImage);
+                        truck.setFitWidth(150);
+                        truck.setPreserveRatio(true);
+
+                        PauseTransition turnPause = new PauseTransition(Duration.seconds(0.25));
+
+                        turnPause.setOnFinished(turn -> {
+
+                            // 2구간: right_upper 이미지로 변경 후 우상단 이동
+                            truck.setImage(emptyTruckRightUpperImage);
+                            truck.setFitWidth(135);
+                            truck.setPreserveRatio(true);
+
+                            TranslateTransition emptyMove2 = new TranslateTransition(Duration.seconds(2.0), truck);
+                            emptyMove2.setToX(730 - truck.getLayoutX());
+                            emptyMove2.setToY(190 - truck.getLayoutY());
+                            emptyMove2.play();
+                        });
+
+                        turnPause.play();
+                    });
+
+                    emptyMove1.play();
+
+                    TranslateTransition trolleyToShip = new TranslateTransition(Duration.seconds(1.3), craneTrolley);
+                    trolleyToShip.setToX(trolleyShipX - craneTrolley.getLayoutX());
+                    trolleyToShip.setToY(0);
+
+                    TranslateTransition spreaderXToShip = new TranslateTransition(Duration.seconds(1.3), craneSpreader);
+                    spreaderXToShip.setToX(spreaderShipX - craneSpreader.getLayoutX());
+                    spreaderXToShip.setToY(0);
+
+                    TranslateTransition containerXToShip = new TranslateTransition(Duration.seconds(1.3), liftingContainer);
+                    containerXToShip.setToX(containerShipX - liftingContainer.getLayoutX());
+                    containerXToShip.setToY(containerShipMoveY - liftingContainer.getLayoutY());
+
+                    ParallelTransition moveXToShip =
+                            new ParallelTransition(trolleyToShip, spreaderXToShip, containerXToShip);
+
+                    moveXToShip.setOnFinished(shipMoveFinish -> {
+                        TranslateTransition spreaderDownToShip =
+                                new TranslateTransition(Duration.seconds(0.8), craneSpreader);
+                        spreaderDownToShip.setToY(shipLowY - craneSpreader.getLayoutY());
+
+                        TranslateTransition containerDownToShip =
+                                new TranslateTransition(Duration.seconds(0.8), liftingContainer);
+                        containerDownToShip.setToY(containerShipY - liftingContainer.getLayoutY());
+
+                        ParallelTransition lowerToShip =
+                                new ParallelTransition(spreaderDownToShip, containerDownToShip);
+
+                        lowerToShip.setOnFinished(lowerFinish -> {
+                            liftingContainer.setVisible(false);
+                            ship.setImage(loadedShipImage);
+                            shipLoaded = true;
+
+                            TranslateTransition spreaderBackUp =
+                                    new TranslateTransition(Duration.seconds(0.8), craneSpreader);
+                            spreaderBackUp.setToY(shipHighY - craneSpreader.getLayoutY());
+                            spreaderBackUp.play();
+                        });
+
+                        lowerToShip.play();
+                    });
+
+                    moveXToShip.play();
+                });
+
+                liftUp.play();
+            });
+
+            spreaderDown.play();
+        });
+
+        moveXToTruck.play();
     }
 
     public static void main(String[] args) {
